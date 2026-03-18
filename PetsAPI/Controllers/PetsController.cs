@@ -20,21 +20,58 @@ namespace PetsAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pet>>> GetPets()
         {
-            return await _context.Pets.ToListAsync();
+            // 測試用假資料（資料庫設定好後請改回資料庫查詢）
+            var mockPets = new List<Pet>
+            {
+                new Pet
+                {
+                    ID = 1,
+                    Name = "小黃",
+                    Species = "狗",
+                    Birthday = new DateTime(2020, 5, 15),
+                    WeightGoal = 8.5m
+                },
+                new Pet
+                {
+                    ID = 2,
+                    Name = "咪咪",
+                    Species = "貓",
+                    Birthday = new DateTime(2021, 3, 20),
+                    WeightGoal = 4.2m
+                }
+            };
+            
+            return Ok(mockPets);
+            
+            // 資料庫版本（資料庫連接後取消註解）
+            // return await _context.Pets.ToListAsync();
         }
 
         // GET: api/Pets/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Pet>> GetPet(int id)
         {
-            var pet = await _context.Pets.FindAsync(id);
-
+            // 測試用假資料
+            var mockPets = new List<Pet>
+            {
+                new Pet { ID = 1, Name = "小黃", Species = "狗", Birthday = new DateTime(2020, 5, 15), WeightGoal = 8.5m },
+                new Pet { ID = 2, Name = "咪咪", Species = "貓", Birthday = new DateTime(2021, 3, 20), WeightGoal = 4.2m }
+            };
+            
+            var pet = mockPets.FirstOrDefault(p => p.ID == id);
             if (pet == null)
             {
                 return NotFound();
             }
-
             return pet;
+            
+            // 資料庫版本（資料庫連接後取消註解）
+            // var pet = await _context.Pets.FindAsync(id);
+            // if (pet == null)
+            // {
+            //     return NotFound();
+            // }
+            // return pet;
         }
 
         // POST: api/Pets
