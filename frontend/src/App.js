@@ -2,8 +2,7 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import { getPets } from './services/petService';
-import ActivityChart from './components/ActivityChart';
-import ActivityChartAPI from './components/ActivityChartAPI';
+import HealthChart from './components/HealthChart';
 
 function App() {
   const [pets, setPets] = useState([]);
@@ -61,16 +60,16 @@ function App() {
 
         {selectedPet && (
           <section>
-            <h2>📊 活動量監控</h2>
-            <ActivityChartAPI 
-              petId={selectedPet.id} 
-              petName={selectedPet.name} 
+            <h2>📊 健康指標監控</h2>
+            <HealthChart
+              petId={selectedPet.id}
+              petName={selectedPet.name}
             />
           </section>
         )}
 
-        {/* 純假數據版本的圖表 */}
-        {/* <ActivityChart petName="小黃" /> */}
+        {/* 舊版圖表（已停用） */}
+        {/* <ActivityChartAPI petId={selectedPet?.id} petName={selectedPet?.name} /> */}
       </div>
     </div>
   );

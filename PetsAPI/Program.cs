@@ -20,13 +20,14 @@ builder.Services.AddCors(options =>
 });
 
 // Add Controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 
 // Add services
 builder.Services.AddScoped<IAlertService, AlertService>();
-
-// Add Hosted Service for collar simulator
-builder.Services.AddHostedService<CollarSimulatorService>();
 
 // Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();

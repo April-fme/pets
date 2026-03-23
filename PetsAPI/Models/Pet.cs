@@ -24,7 +24,7 @@ namespace PetsAPI.Models
         public decimal? WeightGoal { get; set; }
 
         // Navigation properties
-        public ICollection<CollarData> CollarData { get; set; } = new List<CollarData>();
+        public ICollection<HealthData> HealthData { get; set; } = new List<HealthData>();
         public ICollection<DailyLog> DailyLogs { get; set; } = new List<DailyLog>();
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
         public ICollection<Alert> Alerts { get; set; } = new List<Alert>();

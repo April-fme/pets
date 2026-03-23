@@ -15,7 +15,7 @@ namespace PetsAPI.Services
             _logger = logger;
         }
 
-        public async Task<List<Alert>> CheckCollarDataAlertsAsync(CollarData data)
+        public async Task<List<Alert>> CheckHealthDataAlertsAsync(HealthData data)
         {
             var alerts = new List<Alert>();
 
@@ -48,7 +48,7 @@ namespace PetsAPI.Services
             }
 
             // 睡眠品質下降檢查 (連續三日下降 30%)
-            var recentSleep = await _context.CollarData
+            var recentSleep = await _context.HealthData
                 .Where(c => c.PetID == data.PetID)
                 .OrderByDescending(c => c.Timestamp)
                 .Take(3)
@@ -58,7 +58,7 @@ namespace PetsAPI.Services
             if (recentSleep.Count == 3)
             {
                 var avgSleep = recentSleep.Average();
-                if (data.SleepQuality < avgSleep * 0.7m)
+                if (data.SleepQuality < avgSleep * 0.7)
                 {
                     var alert = new Alert
                     {

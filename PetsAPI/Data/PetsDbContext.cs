@@ -10,7 +10,7 @@ namespace PetsAPI.Data
         }
 
         public DbSet<Pet> Pets { get; set; }
-        public DbSet<CollarData> CollarData { get; set; }
+        public DbSet<HealthData> HealthData { get; set; }
         public DbSet<DailyLog> DailyLogs { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Alert> Alerts { get; set; }
@@ -20,9 +20,9 @@ namespace PetsAPI.Data
             base.OnModelCreating(modelBuilder);
 
             // 設定關聯
-            modelBuilder.Entity<CollarData>()
+            modelBuilder.Entity<HealthData>()
                 .HasOne(c => c.Pet)
-                .WithMany(p => p.CollarData)
+                .WithMany(p => p.HealthData)
                 .HasForeignKey(c => c.PetID)
                 .OnDelete(DeleteBehavior.Cascade);
 

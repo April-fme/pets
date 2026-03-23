@@ -8,49 +8,49 @@ namespace PetsAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CollarDataController : ControllerBase
+    public class HealthDataController : ControllerBase
     {
         private readonly PetsDbContext _context;
         private readonly IAlertService _alertService;
 
-        public CollarDataController(PetsDbContext context, IAlertService alertService)
+        public HealthDataController(PetsDbContext context, IAlertService alertService)
         {
             _context = context;
             _alertService = alertService;
         }
 
-        // GET: api/CollarData
+        // GET: api/HealthData
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CollarData>>> GetCollarData()
+        public async Task<ActionResult<IEnumerable<HealthData>>> GetHealthData()
         {
-            return await _context.CollarData
+            return await _context.HealthData
                 .OrderByDescending(c => c.Timestamp)
                 .Take(100)
                 .ToListAsync();
         }
 
-        // GET: api/CollarData/pet/5
+        // GET: api/HealthData/pet/5
         [HttpGet("pet/{petId}")]
-        public async Task<ActionResult<IEnumerable<CollarData>>> GetCollarDataByPet(int petId)
+        public async Task<ActionResult<IEnumerable<HealthData>>> GetHealthDataByPet(int petId)
         {
-            return await _context.CollarData
+            return await _context.HealthData
                 .Where(c => c.PetID == petId)
                 .OrderByDescending(c => c.Timestamp)
                 .ToListAsync();
         }
 
-        // POST: api/CollarData
+        // POST: api/HealthData
         [HttpPost]
-        public async Task<ActionResult<CollarData>> CreateCollarData(CollarData collarData)
+        public async Task<ActionResult<HealthData>> CreateHealthData(HealthData healthData)
         {
-            collarData.Timestamp = DateTime.Now;
-            _context.CollarData.Add(collarData);
+            healthData.Timestamp = DateTime.Now;
+            _context.HealthData.Add(healthData);
             await _context.SaveChangesAsync();
 
             // 檢查異常並產生警報
-            var alerts = await _alertService.CheckCollarDataAlertsAsync(collarData);
+            var alerts = await _alertService.CheckHealthDataAlertsAsync(healthData);
 
-            return CreatedAtAction(nameof(GetCollarData), new { id = collarData.ID }, new { collarData, alerts });
+            return CreatedAtAction(nameof(GetHealthData), new { id = healthData.ID }, new { healthData, alerts });
         }
     }
 }

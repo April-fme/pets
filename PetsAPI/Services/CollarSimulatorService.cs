@@ -23,7 +23,7 @@ namespace PetsAPI.Services
             {
                 try
                 {
-                    await SimulateCollarDataAsync();
+                    await SimulateHealthDataAsync();
                     await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
                 }
                 catch (Exception ex)
@@ -33,7 +33,7 @@ namespace PetsAPI.Services
             }
         }
 
-        private async Task SimulateCollarDataAsync()
+        private async Task SimulateHealthDataAsync()
         {
             using var scope = _serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<PetsDbContext>();
@@ -43,23 +43,23 @@ namespace PetsAPI.Services
 
             foreach (var pet in pets)
             {
-                var collarData = new CollarData
+                var healthData = new HealthData
                 {
                     PetID = pet.ID,
                     Temperature = GetRandomDecimal(37.5m, 40.5m, 1),
                     HeartRate = Random.Shared.Next(80, 140),
                     ActivityLevel = Random.Shared.Next(0, 100),
-                    SleepQuality = GetRandomDecimal(50m, 100m, 2),
+                    SleepQuality = Random.Shared.Next(50, 100),
                     Timestamp = DateTime.Now
                 };
 
-                context.CollarData.Add(collarData);
+                context.HealthData.Add(healthData);
                 await context.SaveChangesAsync();
 
                 // 檢查異常
-                await alertService.CheckCollarDataAlertsAsync(collarData);
+                await alertService.CheckHealthDataAlertsAsync(healthData);
 
-                _logger.LogInformation($"模擬項圈數據: 寵物 {pet.Name} - 體溫 {collarData.Temperature}°C, 心率 {collarData.HeartRate} bpm");
+                _logger.LogInformation($"模擬健康數據: 寵物 {pet.Name} - 體溫 {healthData.Temperature}°C, 心率 {healthData.HeartRate} bpm");
             }
         }
 

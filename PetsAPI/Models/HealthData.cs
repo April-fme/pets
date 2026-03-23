@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PetsAPI.Models
 {
-    [Table("CollarData")]
-    public class CollarData
+    [Table("HealthData")]
+    public class HealthData
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -20,8 +20,7 @@ namespace PetsAPI.Models
 
         public int ActivityLevel { get; set; }
 
-        [Column(TypeName = "decimal(5, 2)")]
-        public decimal SleepQuality { get; set; }
+        public int SleepQuality { get; set; }
 
         public DateTime Timestamp { get; set; } = DateTime.Now;
 
