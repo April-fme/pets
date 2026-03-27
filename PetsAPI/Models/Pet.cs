@@ -23,7 +23,11 @@ namespace PetsAPI.Models
         [Column(TypeName = "decimal(5, 2)")]
         public decimal? WeightGoal { get; set; }
 
+        [ForeignKey("User")]
+        public int UserID { get; set; }
+
         // Navigation properties
+        public User? User { get; set; }
         public ICollection<HealthData> HealthData { get; set; } = new List<HealthData>();
         public ICollection<DailyLog> DailyLogs { get; set; } = new List<DailyLog>();
         public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();

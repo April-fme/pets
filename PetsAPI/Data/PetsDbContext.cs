@@ -9,6 +9,7 @@ namespace PetsAPI.Data
         {
         }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Pet> Pets { get; set; }
         public DbSet<HealthData> HealthData { get; set; }
         public DbSet<DailyLog> DailyLogs { get; set; }
@@ -18,6 +19,13 @@ namespace PetsAPI.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // User-Pet relationship
+            modelBuilder.Entity<Pet>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Pets)
+                .HasForeignKey(p => p.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // 設定關聯
             modelBuilder.Entity<HealthData>()
