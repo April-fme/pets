@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: pets-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: ./
+    plan: free
+    healthCheckPath: /swagger
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://+:8080
+      - key: ConnectionStrings__PetsDatabase
+        sync: false   # 在 Render Dashboard 手動填入 Supabase 連線字串
+      - key: AllowedOrigins__0
+        sync: false   # 在 Render Dashboard 填入 Vercel 應用網址
+      - key: JwtSettings__SecretKey
+        sync: false   # 在 Render Dashboard 填入強密碼
+      - key: JwtSettings__Issuer
+        value: PetsAPI
+      - key: JwtSettings__Audience
+        value: PetsClient
+      - key: JwtSettings__ExpiryMinutes
+        value: "1440"

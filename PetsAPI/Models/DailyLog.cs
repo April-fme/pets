@@ -25,7 +25,7 @@ namespace PetsAPI.Models
         [MaxLength(50)]
         public string? UrineStatus { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation property
         [ForeignKey("PetID")]

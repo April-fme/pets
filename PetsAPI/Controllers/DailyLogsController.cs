@@ -43,7 +43,7 @@ namespace PetsAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<DailyLog>> CreateDailyLog(DailyLog dailyLog)
         {
-            dailyLog.CreatedAt = DateTime.Now;
+            dailyLog.CreatedAt = DateTime.UtcNow;
 
             // 計算過去 7 筆平均食量
             var recentLogs = await _context.DailyLogs

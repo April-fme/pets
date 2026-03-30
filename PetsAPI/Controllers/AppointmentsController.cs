@@ -25,7 +25,7 @@ namespace PetsAPI.Controllers
                 .ToListAsync();
 
             // 標記即將到來的預約（24小時內）
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             foreach (var appointment in appointments)
             {
                 if (appointment.AppointmentDate > now && 
@@ -61,6 +61,9 @@ namespace PetsAPI.Controllers
                 appointment.Status = "預約中";
             }
 
+            // 確保日期以 UTC 格式儲存到 PostgreSQL
+            appointment.AppointmentDate = DateTime.SpecifyKind(appointment.AppointmentDate, DateTimeKind.Utc);
+
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
 
@@ -75,6 +78,9 @@ namespace PetsAPI.Controllers
             {
                 return BadRequest();
             }
+
+            // 確保日期以 UTC 格式儲存到 PostgreSQL
+            appointment.AppointmentDate = DateTime.SpecifyKind(appointment.AppointmentDate, DateTimeKind.Utc);
 
             _context.Entry(appointment).State = EntityState.Modified;
 

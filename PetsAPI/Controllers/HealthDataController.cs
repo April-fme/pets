@@ -43,7 +43,7 @@ namespace PetsAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<HealthData>> CreateHealthData(HealthData healthData)
         {
-            healthData.Timestamp = DateTime.Now;
+            healthData.Timestamp = DateTime.UtcNow;
             _context.HealthData.Add(healthData);
             await _context.SaveChangesAsync();
 

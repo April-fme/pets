@@ -22,7 +22,7 @@ namespace PetsAPI.Models
 
         public int SleepQuality { get; set; }
 
-        public DateTime Timestamp { get; set; } = DateTime.Now;
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
         // Navigation property
         [ForeignKey("PetID")]

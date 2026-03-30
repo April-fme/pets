@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add DbContext
 builder.Services.AddDbContext<PetsDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PetsDatabase")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PetsDatabase")));
 
 // Add JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -36,11 +36,14 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Add CORS
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
+    ?? new[] { "http://localhost:3000" };
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
