@@ -67,12 +67,11 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Swagger 在所有環境開啟（Render health check 需要）
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
 
 app.UseCors("AllowFrontend");
 
@@ -80,10 +79,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.Run();
-
-app.MapGet("/", () => "Pets Health Monitoring API");
 
 app.Run();
 
