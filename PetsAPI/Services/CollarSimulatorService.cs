@@ -24,7 +24,7 @@ namespace PetsAPI.Services
                 try
                 {
                     await SimulateHealthDataAsync();
-                    await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+                    await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken);
                 }
                 catch (Exception ex)
                 {
