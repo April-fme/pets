@@ -35,7 +35,7 @@ const ActivityChartAPI = ({ petId, petName = '寵物' }) => {
     try {
       setLoading(true);
       // 從 API 取得項圈數據
-      const response = await axios.get(`http://localhost:3001/api/healthdata/pet/${petId}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/healthdata/pet/${petId}`);
       const collarData = response.data;
 
       // 處理數據格式
