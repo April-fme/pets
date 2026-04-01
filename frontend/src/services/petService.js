@@ -2,7 +2,7 @@ import api from './api';
 import authService from './authService';
 
 export const getPets = async () => {
-  try {
+  const makeRequest = async () => {
     // 確保 token 被設置
     const token = authService.getToken();
     if (token) {
@@ -15,14 +15,24 @@ export const getPets = async () => {
     const data = response.data.value || response.data;
     console.log('載入寵物成功:', data);
     return data;
+  };
+
+  try {
+    return await makeRequest();
   } catch (error) {
-    console.error('載入寵物失敗詳細信息:', {
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      message: error.message,
-      data: error.response?.data,
-      headers: error.response?.request?.headers
-    });
-    throw error;
+    console.warn('第一次加載寵物失敗，2秒後重試...', error.message);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return await makeRequest();
+    } catch (retryError) {
+      console.error('第二次加載寵物失敗詳細信息:', {
+        status: retryError.response?.status,
+        statusText: retryError.response?.statusText,
+        message: retryError.message,
+        data: retryError.response?.data,
+        headers: retryError.response?.request?.headers
+      });
+      throw retryError;
+    }
   }
 };
