@@ -60,7 +60,7 @@ builder.Services.AddControllers()
 // Add services
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddHostedService<CollarSimulatorService>();
+//builder.Services.AddHostedService<CollarSimulatorService>();
 
 // Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
