@@ -46,7 +46,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod();
-    });         
+    });
 });
 
 // Add Controllers
@@ -67,23 +67,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-// 自動執行數據庫遷移
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<PetsDbContext>();
-    try
-    {
-        await dbContext.Database.MigrateAsync();
-        Console.WriteLine("✅ 數據庫遷移完成");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"⚠️ 數據庫遷移失敗: {ex.Message}");
-        // 在生產環境中，我們仍然繼續運行
-        // 如果這是初次啟動，應用可能會因沒有表而無法工作
-    }
-}
 
 // Swagger 在所有環境開啟（Render health check 需要）
 app.UseSwagger();

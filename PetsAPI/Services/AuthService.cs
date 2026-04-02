@@ -12,13 +12,11 @@ namespace PetsAPI.Services
     {
         private readonly PetsDbContext _context;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(PetsDbContext context, IConfiguration configuration, ILogger<AuthService> logger)
+        public AuthService(PetsDbContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
-            _logger = logger;
         }
 
         public async Task<(bool Success, string Message, string? Token)> RegisterAsync(
@@ -58,12 +56,10 @@ namespace PetsAPI.Services
                 await _context.SaveChangesAsync();
 
                 var token = GenerateJwtToken(user);
-                _logger.LogInformation($"用戶註冊成功: {username}");
                 return (true, "註冊成功", token);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"註冊異常 - 用戶: {username}, 郵箱: {email}, 錯誤: {ex.Message}");
                 return (false, $"註冊失敗: {ex.Message}", null);
             }
         }
@@ -73,22 +69,18 @@ namespace PetsAPI.Services
         {
             try
             {
-                _logger.LogInformation($"嘗試登入用戶: {username}");
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
 
                 if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
                 {
-                    _logger.LogWarning($"登入失敗：用戶不存在或密碼錯誤 - {username}");
                     return (false, "用戶名或密碼錯誤", null);
                 }
 
                 var token = GenerateJwtToken(user);
-                _logger.LogInformation($"登入成功: {username}");
                 return (true, "登入成功", token);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"登入異常 - 用戶: {username}, 錯誤: {ex.Message}, InnerException: {ex.InnerException?.Message}");
                 return (false, $"登入失敗: {ex.Message}", null);
             }
         }
