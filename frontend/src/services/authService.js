@@ -5,32 +5,48 @@ const USER_KEY = 'pets_user';
 
 export const authService = {
   async login(username, password) {
-    try {
-      console.log('嘗試登入:', { username, password });
-      const response = await api.post('/auth/login', { username, password });
-      console.log('登入響應:', response.data);
-      const { token } = response.data;
-      
-      if (!token) {
-        throw new Error('未收到 token');
+    const makeLoginRequest = async (attempt = 1) => {
+      try {
+        console.log(`嘗試登入 (第 ${attempt} 次):`, { username, password });
+        const response = await api.post('/auth/login', { username, password });
+        console.log('登入響應:', response.data);
+        const { token } = response.data;
+        
+        if (!token) {
+          throw new Error('未收到 token');
+        }
+        
+        localStorage.setItem(TOKEN_KEY, token);
+        const user = parseJwt(token);
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        console.log('登入成功，已設置 token:', token.substring(0, 20) + '...');
+        return response.data;
+      } catch (error) {
+        const errorMessage = error.response?.data || error.message || '';
+        const isTransientFailure = errorMessage.includes('transient failure');
+        
+        console.error(`登入第 ${attempt} 次失敗:`, {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          message: error.message,
+          isTransientFailure
+        });
+        
+        // 如果是 transient failure 且是第一次嘗試，自動重試
+        if (isTransientFailure && attempt === 1) {
+          console.warn('⚠️ 偵測到伺服器暫時故障，等待 2 秒後進行第二次嘗試...');
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          return makeLoginRequest(2);
+        }
+        
+        // 第二次仍然失敗或其他錯誤，拋出錯誤
+        throw error;
       }
-      
-      localStorage.setItem(TOKEN_KEY, token);
-      const user = parseJwt(token);
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      console.log('登入成功，已設置 token:', token.substring(0, 20) + '...');
-      return response.data;
-    } catch (error) {
-      console.error('登入錯誤詳情:', {
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data,
-        message: error.message,
-        config: error.config
-      });
-      throw error;
-    }
+    };
+    
+    return makeLoginRequest();
   },
 
   async register(username, email, password, fullName) {
