@@ -9,7 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add DbContext
 builder.Services.AddDbContext<PetsDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PetsDatabase")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("PetsDatabase"),
+        npgsqlOptions => npgsqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 6,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorCodesToAdd: null
+        )
+    ));
 
 // Add JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
